@@ -1,4 +1,5 @@
 from plot_tune import *
+import pandas as pd
 
 def getValues():
 
@@ -18,13 +19,13 @@ def getValues():
 
     cpymad_check_and_use_sequence(madx, cpymad_logfile, sequence_name)
 
-
     # dummy values for set tunes (get values from EPICS later)
     qx_array = [4.315, 4.270, 4.270, 4.250, 4.235, 4.205, 4.170, 4.190, 4.18, 4.18, 4.18, 4.17, 4.165, 4.165, 4.165, 4.18, 4.18, 4.175]
     qy_array = [3.82, 3.82, 3.81, 3.805, 3.800, 3.825, 3.680, 3.680, 3.69, 3.7, 3.7, 3.695, 3.695, 3.695, 3.692, 3.69, 3.685, 3.665]
 
     # dummy values for time array
     time_array = np.array([-0.1, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0, 8.0, 9.0, 10.0])
+
 
     # Check that arrays have same length
     assert(len(qx_array) == len(qy_array))
@@ -53,26 +54,26 @@ def getValues():
         output['type'].append('set')
 
     for i in range(0, len(output_df)):
-        output['x'].append(output_df["Qh"][i])
-        output['y'].append(output_df["Qv"][i])
+        output['x'].append(output_df["Machine Qh"][i])
+        output['y'].append(output_df["Machine Qv"][i])
         output['type'].append('actual')
 
     df = pd.DataFrame(output)
 
 
-    # ## Plotly
-    # import pandas as pd
-    # import seaborn as sns
-    # import plotly.express as px
+    ## Plotly
+    
+    import seaborn as sns
+    import plotly.express as px
 
-    # # plotting set & actual tunes
-    # fig = px.scatter(df, x="x", y="y", color="type")
-    # fig.update_layout(
-    #     title="Set & Actual Tunes",
-    #     xaxis_title='Qh',
-    #     yaxis_title='Qv',
-    # )
-    # fig.show()
+    # plotting set & actual tunes
+    fig = px.scatter(df, x="x", y="y", color="type")
+    fig.update_layout(
+        title="Set & Actual Tunes",
+        xaxis_title='Qh',
+        yaxis_title='Qv',
+    )
+    fig.show()
 
     return df
 
