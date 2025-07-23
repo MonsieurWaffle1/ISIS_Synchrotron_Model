@@ -10,7 +10,7 @@ import numpy as np
 
 #### Importing data
 from get_tune_values import *
-from plot_tune_notebook import *
+from plot_tune import *
 
 st.title("Tune GUI")
 

@@ -1,5 +1,6 @@
-from plot_tune import *
 import pandas as pd
+from plot_tune import *
+
 
 # This is dummy EPIX code, replace with real file
 # When ready real file should be a drop-in replacement
@@ -13,7 +14,8 @@ def getValues() -> pd.DataFrame:
 
     madx = cpymad_start(cpymad_logfile)
 
-    lattice_folder = 'ISIS_Synchrotron_Model\\Lattice_Files\\04_New_Harmonics\\'
+    # lattice_folder = '..\\Lattice_Files\\04_New_Harmonics\\'
+    lattice_folder = '../Lattice_Files/04_New_Harmonics/'
 
     madx.call(file=lattice_folder+'ISIS.injected_beam')
     madx.call(file=lattice_folder+'ISIS.strength')
