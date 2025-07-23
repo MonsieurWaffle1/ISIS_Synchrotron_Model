@@ -55,9 +55,8 @@ edited_df = st.data_editor(
     num_rows="dynamic"
 )
 
-################################### REPLACE CODE UNDER WITH TABLE
+################################### tune table
 
-df = getValues()
 
 # plotting set & actual tunes
 fig = px.scatter(df,
@@ -74,6 +73,7 @@ fig.update_layout(
     legend=dict(x=0, y=1, traceorder='normal', orientation='h')
 )
 
+st.plotly_chart(fig)
 ###################################### beta table
 st.title("Beta values table")
 
