@@ -231,7 +231,7 @@ madx = cpymad_start(cpymad_logfile)
 # lattice_folder = '../Lattice_Files/01_Original_Lattice/'
 # lattice_folder = '../Lattice_Files/02_Aperture_Lattice/'
 # lattice_folder = '../Lattice_Files/03_CO_Kick_Lattice/'
-lattice_folder = '../Lattice_Files/04_New_Harmonics/'
+lattice_folder = 'ISIS_Synchrotron_Model/Lattice_Files/04_New_Harmonics/'
 
 madx.call(file=lattice_folder+'ISIS.injected_beam')
 madx.call(file=lattice_folder+'ISIS.strength')

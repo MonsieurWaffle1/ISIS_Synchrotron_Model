@@ -56,16 +56,23 @@ edited_df = st.data_editor(
 )
 
 ################################### REPLACE CODE UNDER WITH TABLE
-fig = px.scatter(df, 
-                    x="x", 
-                    y="y",
-                    color="type",
-                    labels={
-                    "x":"Qx", 
-                    "y":"Qy",
-                    "type":"Type of tune", 
-                    })
-st.plotly_chart(fig)
+
+df = getValues()
+
+# plotting set & actual tunes
+fig = px.scatter(df,
+    x="x", 
+    y="y", 
+    color="time", 
+    symbol="type",
+)
+
+fig.update_layout(
+    title="Set & Actual Tunes",
+    xaxis_title='Qh',
+    yaxis_title='Qv',
+    legend=dict(x=0, y=1, traceorder='normal', orientation='h')
+)
 
 ###################################### beta table
 st.title("Beta values table")
