@@ -45,18 +45,21 @@ def getValues():
     output = {
         "x":[],
         "y":[],
-        "type":[]
+        "type":[],
+        "time":[]
     }
 
-    for i in range(0, len(tq_currents_df)):
-        output['x'].append(tq_currents_df["Qh"][i])
-        output['y'].append(tq_currents_df["Qv"][i])
+    for i in range(0, len(output_df)):
+        output['x'].append(output_df["Qh"][i])
+        output['y'].append(output_df["Qv"][i])
         output['type'].append('set')
+        output['time'].append(output_df["time"][i])
 
     for i in range(0, len(output_df)):
         output['x'].append(output_df["Machine Qh"][i])
         output['y'].append(output_df["Machine Qv"][i])
         output['type'].append('actual')
+        output['time'].append(output_df["time"][i])
 
     df = pd.DataFrame(output)
 
@@ -67,11 +70,17 @@ def getValues():
     import plotly.express as px
 
     # plotting set & actual tunes
-    fig = px.scatter(df, x="x", y="y", color="type")
+    fig = px.scatter(df,
+        x="x", 
+        y="y", 
+        color="time", 
+        symbol="type",
+    )
     fig.update_layout(
         title="Set & Actual Tunes",
         xaxis_title='Qh',
         yaxis_title='Qv',
+        legend=dict(x=0, y=1, traceorder='normal', orientation='h')
     )
     fig.show()
 
