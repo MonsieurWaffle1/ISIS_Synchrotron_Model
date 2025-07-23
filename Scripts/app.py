@@ -9,7 +9,8 @@ import seaborn as sns
 import numpy as np
 
 #### Importing data
-from get_values import *
+from get_tune_values import *
+from plot_tune_notebook import *
 
 st.title("Tune GUI")
 
@@ -21,6 +22,8 @@ st.markdown(
 )
 #  DataFrame
 df = getValues()
+
+print(df)
 
 set_df = df[df['type'] == 'set']
 
@@ -53,21 +56,27 @@ edited_df = st.data_editor(
 )
 
 ################################### REPLACE CODE UNDER WITH TABLE
+fig = px.scatter(df, 
+                    x="x", 
+                    y="y",
+                    color="type",
+                    labels={
+                    "x":"Qx", 
+                    "y":"Qy",
+                    "type":"Type of tune", 
+                    })
+st.plotly_chart(fig)
 
-df = getValues()
+###################################### beta table
+st.title("Beta values table")
 
-# plotting set & actual tunes
-fig = px.scatter(df,
-    x="x", 
-    y="y", 
-    color="time", 
-    symbol="type",
-)
-fig.update_layout(
-    title="Set & Actual Tunes",
-    xaxis_title='Qh',
-    yaxis_title='Qv',
-    legend=dict(x=0, y=1, traceorder='normal', orientation='h')
-)
+twiss_table = get_twiss_table()
 
+fig = px.line(twiss_table, 
+            x="s", 
+            y="betx",
+            labels={
+            "betx":"Beta X"
+            }
+            )
 st.plotly_chart(fig)

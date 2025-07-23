@@ -1,0 +1,16 @@
+
+  ++++++++++++++++++++++++++++++++++++++++++++
+  +     MAD-X 5.09.03  (64 bit, Windows)     +
+  + Support: mad@cern.ch, http://cern.ch/mad +
+  + Release   date: 2024.04.25               +
+  + Execution date: 2025.07.23 15:23:54      +
+  ++++++++++++++++++++++++++++++++++++++++++++
+
+++++++ warning: cannot open input file: ISIS_Synchotron_Model\Lattice_Files\04_New_Harmonics\ISIS.injected_beam
+++++++ warning: cannot open input file: ISIS_Synchotron_Model\Lattice_Files\04_New_Harmonics\ISIS.strength
+++++++ warning: cannot open input file: ISIS_Synchotron_Model\Lattice_Files\04_New_Harmonics\2023.strength
+++++++ warning: cannot open input file: ISIS_Synchotron_Model\Lattice_Files\04_New_Harmonics\ISIS.elements
+++++++ warning: cannot open input file: ISIS_Synchotron_Model\Lattice_Files\04_New_Harmonics\ISIS.sequence
+++++++ warning: unknown sequence skipped: synchrotron
+
+! cpymad_check_and_use_sequence called for sequence synchrotron

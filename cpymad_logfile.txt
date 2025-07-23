@@ -1,0 +1,22 @@
+
+  ++++++++++++++++++++++++++++++++++++++++++++
+  +     MAD-X 5.09.03  (64 bit, Windows)     +
+  + Support: mad@cern.ch, http://cern.ch/mad +
+  + Release   date: 2024.04.25               +
+  + Execution date: 2025.07.23 14:26:36      +
+  ++++++++++++++++++++++++++++++++++++++++++++
+
+++++++ warning: cannot open input file: ..\Lattice_Files\04_New_Harmonics\ISIS.injected_beam
+++++++ warning: cannot open input file: ..\Lattice_Files\04_New_Harmonics\ISIS.strength
+++++++ warning: cannot open input file: ..\Lattice_Files\04_New_Harmonics\2023.strength
+++++++ warning: cannot open input file: ..\Lattice_Files\04_New_Harmonics\ISIS.elements
+++++++ warning: cannot open input file: ..\Lattice_Files\04_New_Harmonics\ISIS.sequence
+++++++ warning: unknown sequence skipped: synchrotron
+++++++ warning: unknown sequence skipped: synchrotron
+
+  Number of warnings: 7
+7 in C and 0 in Fortran
+
+  ++++++++++++++++++++++++++++++++++++++++++++
+  +          MAD-X finished normally         +
+  ++++++++++++++++++++++++++++++++++++++++++++
