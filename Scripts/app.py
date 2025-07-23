@@ -9,7 +9,8 @@ import seaborn as sns
 import numpy as np
 
 #### Importing data
-from get_values import *
+from get_tune_values import *
+from plot_tune import *
 
 st.title("Tune GUI")
 
@@ -21,6 +22,8 @@ st.markdown(
 )
 #  DataFrame
 df = getValues()
+
+print(df)
 
 set_df = df[df['type'] == 'set']
 
@@ -62,4 +65,18 @@ fig = px.scatter(df,
                     "y":"Qy",
                     "type":"Type of tune", 
                     })
+st.plotly_chart(fig)
+
+###################################### beta table
+st.title("Beta values table")
+
+twiss_table = get_twiss_table()
+
+fig = px.line(twiss_table, 
+            x="s", 
+            y="betx",
+            labels={
+            "betx":"Beta X"
+            }
+            )
 st.plotly_chart(fig)
