@@ -23,7 +23,7 @@ st.markdown(
 #  DataFrame
 df = getValues()
 
-print(df)
+# print(df)
 
 set_df = df[df['type'] == 'set']
 
@@ -74,6 +74,7 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
+
 ###################################### beta table
 st.title("Beta values table")
 
