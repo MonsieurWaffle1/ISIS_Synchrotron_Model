@@ -2,7 +2,6 @@ from cpymad_helpers import *
 from cpymad_closed_orbit_matching_functions import *
 from ISIS_tune_control_functions import *
 from helper_functions import *
-from get_values import *
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
