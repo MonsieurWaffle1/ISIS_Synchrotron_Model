@@ -50,18 +50,17 @@ def getValues():
     for i in range(0, len(tq_currents_df)):
         output['x'].append(tq_currents_df["Qh"][i])
         output['y'].append(tq_currents_df["Qv"][i])
-        output['type'].append('expected')
+        output['type'].append('set')
 
     for i in range(0, len(output_df)):
         output['x'].append(output_df["Qh"][i])
         output['y'].append(output_df["Qv"][i])
-        output['type'].append('real')
+        output['type'].append('actual')
 
     df = pd.DataFrame(output)
 
     return df
 
-
-
+print(getValues())
 # output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
 

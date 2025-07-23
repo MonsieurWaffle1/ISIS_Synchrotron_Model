@@ -198,3 +198,5 @@ class resonance_lines(object):
                         str(abs(resonance[1])).rjust(2), str(res_sum).rjust(4), \
                         ("(non-systematic)", "(systematic)")[res_sum%self.periodicity==0])
                 print(print_string)
+
+
