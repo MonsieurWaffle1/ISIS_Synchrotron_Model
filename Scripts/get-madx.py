@@ -21,7 +21,7 @@ cpymad_set_isis_cycle_time(madx, max_E, cycle_time)
 
 twiss_0 = cpymad_madx_twiss(madx, cpymad_logfile, sequence_name)
 
-print(twiss_0["Qh"])
+print(twiss_0)
 
 
 
