@@ -2,6 +2,7 @@ from cpymad_helpers import *
 from cpymad_closed_orbit_matching_functions import *
 from ISIS_tune_control_functions import *
 from helper_functions import *
+from get_values import *
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -219,3 +220,20 @@ print(tq_currents_df)
 # Finally! Let's get the real tunes
 output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
 print(output_df)
+
+
+## Plotly
+import pandas as pd
+import seaborn as sns
+import plotly.express as px
+
+df = getValues()
+
+# plotting set & actual tunes
+fig = px.scatter(df, x="x", y="y", color="type")
+fig.update_layout(
+    title="Set & Actual Tunes",
+    xaxis_title='Qh',
+    yaxis_title='Qv',
+)
+fig.show()
