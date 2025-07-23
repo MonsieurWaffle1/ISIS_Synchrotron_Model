@@ -9,7 +9,7 @@ import seaborn as sns
 import numpy as np
 
 #### Importing data
-from get_values import *
+from ISIS_Synchrotron_Model.Scripts.get_tune_values import *
 
 st.title("Tune GUI")
 
