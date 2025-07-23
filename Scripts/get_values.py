@@ -19,7 +19,7 @@ def getValues():
     cpymad_check_and_use_sequence(madx, cpymad_logfile, sequence_name)
 
 
-    # dummy values for set tunes
+    # dummy values for set tunes (get values from EPICS later)
     qx_array = [4.315, 4.270, 4.270, 4.250, 4.235, 4.205, 4.170, 4.190, 4.18, 4.18, 4.18, 4.17, 4.165, 4.165, 4.165, 4.18, 4.18, 4.175]
     qy_array = [3.82, 3.82, 3.81, 3.805, 3.800, 3.825, 3.680, 3.680, 3.69, 3.7, 3.7, 3.695, 3.695, 3.695, 3.692, 3.69, 3.685, 3.665]
 
@@ -59,8 +59,24 @@ def getValues():
 
     df = pd.DataFrame(output)
 
+
+    # ## Plotly
+    # import pandas as pd
+    # import seaborn as sns
+    # import plotly.express as px
+
+    # # plotting set & actual tunes
+    # fig = px.scatter(df, x="x", y="y", color="type")
+    # fig.update_layout(
+    #     title="Set & Actual Tunes",
+    #     xaxis_title='Qh',
+    #     yaxis_title='Qv',
+    # )
+    # fig.show()
+
     return df
 
 print(getValues())
 # output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
+
 
