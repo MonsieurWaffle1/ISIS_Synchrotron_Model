@@ -4,7 +4,7 @@ import pandas as pd
 from pandas import DataFrame # Used for TypeHinting
 import pandas as pd
 from typing import List # Used for TypeHinting
-from datetime import datetime
+import datetime
 import requests
 import re 
 import os
@@ -19,9 +19,11 @@ def get_historical_data(pv_name: str, start_time: datetime, end_time: datetime, 
     #Convert DataTime object to 
     start_time = start_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     end_time = end_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
     
     #API String to get data from a set PV and its time window of intrest
     data_str_req = f'{archiver_addr}/data?pv={pv_name}&from={start_time}&to={end_time}'
+    print(data_str_req)
     data_meta = requests.get(data_str_req).json()
 
     # Convert the list of dictionaries to a DataFrame
@@ -35,14 +37,14 @@ def get_historical_data(pv_name: str, start_time: datetime, end_time: datetime, 
     
     return df
 
-def date_to_unix(date: datetime) -> float:
+def date_to_unix(date: datetime.datetime) -> float:
     """Helper function to reformat dates."""
     return date.timestamp()
 
 def get_archive_trim_quads(t_cycle: str = "5", magnet_type: str = "QTD", year: str = "2024", month: str = "10", day: str = "05", t_start: str = "01:01:02", t_end: str = "23:59:59", archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame:
     """Function to get the current at the trim quads from the archive, given the cycle, magnet type, and date. Calls get_historical_data()."""
-    current_time = datetime.now() #loads the current time and an arbitrarily set start time which is crucial for later on
-    start_time = datetime(2022, 6, 20) # when we will be loading up data
+    current_time = datetime.datetime.now() #loads the current time and an arbitrarily set start time which is crucial for later on
+    start_time = datetime.datetime(2022, 6, 20) # when we will be loading up data
     time_periods = ["-.6","-.5","-.4","-.3","-.2","-.1","0",".5","1","1.5","2","2.5","3","3.5","4","4.5","5","5.5","6","7","8","9","10"]
     regex = "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$" # this is simply some data validation code
 
@@ -56,29 +58,15 @@ def get_archive_trim_quads(t_cycle: str = "5", magnet_type: str = "QTD", year: s
         print("The t_start variable is not valid please enter in a value in the format of HH:MM:SS as a string")
     else:
         pass
-    if re.search(t_end, regex):
-        print("The t_end variable is not valid please enter in a value in the format of HH:MM:SS as a string")
-    else:
-        pass
     
     requested_array = []
     start_timestamp = year+"-"+month+"-"+day+" "+t_start+".000000"#just converting the inputs to datetime format
     end_timestamp = year+"-"+month+"-"+day+" "+t_end+".999999"
 
-    start_timestamp = date_to_unix(datetime.strptime(start_timestamp,'%Y-%m-%d %H:%M:%S.%f'))
-    end_timestamp =  date_to_unix(datetime.strptime(end_timestamp,'%Y-%m-%d %H:%M:%S.%f')) # converting the datetime format
+    start_timestamp = date_to_unix(datetime.datetime.strptime(start_timestamp,'%Y-%m-%d %H:%M:%S.%f'))
+    end_timestamp =  date_to_unix(datetime.datetime.strptime(end_timestamp,'%Y-%m-%d %H:%M:%S.%f')) # converting the datetime format
     # to unix format
     channel_list = []
-
-    
-    for j in range(10):# just loading up the channels into a array
-        current_channel_string = "DWQ_TEST::R"+str(j)+"QTD:CURRENT:"+t_cycle+"MS"
-        channel_list.append(get_historical_data(current_channel_string,start_time,current_time, archiver_addr=archiver_addr))
-
-
-    for j in range(10):
-        current_channel_string = "DWQ_TEST::R"+str(j)+"QTF:CURRENT:"+t_cycle+"MS"
-        channel_list.append(get_historical_data(current_channel_string,start_time,current_time, archiver_addr=archiver_addr))
 
     count = 0 # loads the valid time inputs below the t_end into a large array 
     full_dataframe = []
@@ -96,12 +84,6 @@ def get_archive_trim_quads(t_cycle: str = "5", magnet_type: str = "QTD", year: s
             if date_to_unix(row.iloc[0]) > end_timestamp:
                 break
 
-    for i in range(10):
-        for index,row in channel_list[i].iterrows():
-            if row.iloc[1] != 0 and date_to_unix(row.iloc[0]) <= end_timestamp:
-                full_dataframe.append([date_to_unix(row.iloc[0]),float(row.iloc[1]),"R"+str(i)+"QTF"])
-            if date_to_unix(row.iloc[0]) > end_timestamp:
-                break
 
     full_dataframe.sort()#ensures the currents are sorted by time as data is only recorded when the quadripoles are changed
     full_dataframe = full_dataframe[::-1]
@@ -129,28 +111,30 @@ def get_archive_trim_quads(t_cycle: str = "5", magnet_type: str = "QTD", year: s
                 valid = False
 
     for i in range(len(requested_array)):
-        requested_array[i] = [requested_array[i][1], (datetime.fromtimestamp(requested_array[i][0])).replace(second=0, microsecond=0) , t_cycle, requested_array[i][-1]]
+        requested_array[i] = [requested_array[i][1], (datetime.datetime.fromtimestamp(requested_array[i][0])).replace(second=0, microsecond=0) , t_cycle, requested_array[i][-1]]
     result_dataframe = pd.DataFrame(requested_array,columns=["Current","Last Change","Cycle Time","Trim Quad"])
     result_dataframe = result_dataframe[['Cycle Time', 'Trim Quad', 'Current', 'Last Change']]
 
     return result_dataframe 
 
-def date_to_unix(date: datetime | str) -> float:
+def date_to_unix(date: datetime.datetime | str) -> float:
     """Helper function to reformat date."""
     if isinstance(date, str):
-        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
+        date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
     return date.timestamp()
 
-def get_archive_correctors(cycleTime: int, axis: str, timeStart: datetime, timeEnd: datetime, archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame: # returns a pandas datatype with headers timestamp, val for current, magnet name and cycle time
+def get_archive_correctors(cycleTime: int, axis: str, timeStart: datetime.datetime, timeEnd: datetime.datetime, archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame: # returns a pandas datatype with headers timestamp, val for current, magnet name and cycle time
     """Function to get corrector values from the archive, given time in cycle, and date. Calls get_historical_data()."""
     returnData = pd.DataFrame()
     for i in range(0,10):
         if i == 1 or i == 8 or i == 6:
             continue
         else:
+            print(f"DW{axis}ST_TEST::R{i}{axis}D1:CURRENT:{cycleTime}MS")
             HistoryData = (get_historical_data(f"DW{axis}ST_TEST::R{i}{axis}D1:CURRENT:{cycleTime}MS",timeStart,timeEnd, archiver_addr=archiver_addr))
+            
             while HistoryData.empty:
-                HistoryData = (get_historical_data(f"DW{axis}ST_TEST::R{i}{axis}D1:CURRENT:{cycleTime}MS",timeStart-datetime(0,0,1),timeEnd, archiver_addr=archiver_addr))
+                HistoryData = (get_historical_data(f"DW{axis}ST_TEST::R{i}{axis}D1:CURRENT:{cycleTime}MS",timeStart-datetime.timedelta(month=1),timeEnd, archiver_addr=archiver_addr))
             HistoryData.insert(1,"Magnet Name",f"R{i}{axis}D1")
             returnData = pd.concat([returnData,HistoryData])
     returnData.insert(2,"Cycle Time",cycleTime)
@@ -202,12 +186,15 @@ if os.environ.get("ACCESS_LIVE_DATA"):
         from p4p.client.thread import Context 
     elif os.environ.get("SUPPRESS_P4P_WARNING"): 
         if os.environ["SUPPRESS_P4P_WARNING"] == "False":
-            print("LIVE DATA UNAVAILABLE. 'get_EPICS_****' functions are dependent on p4p which can only be run on the specific p4p laptops. Will give an error if accessed. Use os.environ['SUPPRESS_P4P_WARNING'] = 'True' to suppress this warning.")
+            print("Warning: LIVE DATA UNAVAILABLE. 'get_EPICS_****' functions are dependent on p4p which can only be run on the specific p4p laptops. Will give an error if accessed. Use os.environ['SUPPRESS_P4P_WARNING'] = 'True' to suppress this warning.")
+    else:
+        print("Warning: LIVE DATA UNAVAILABLE. 'get_EPICS_****' functions are dependent on p4p which can only be run on the specific p4p laptops. Will give an error if accessed. Use os.environ['SUPPRESS_P4P_WARNING'] = 'True' to suppress this warning.")
+
 else:
     from p4p.client.thread import Context
 import datetime
 
-def get_EPICS_Horizontal_Correctors(cycletime: str, filename: str | None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
+def get_EPICS_Horizontal_Correctors(cycletime: str, filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
     """Function to get live Horizontal Corrector data from EPICS. Returns a DataFrame, given the time in cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
     os.environ["EPICS_PVA_NAME_SERVERS"] = live_addr
     ctxt = Context("pva")
@@ -222,10 +209,12 @@ def get_EPICS_Horizontal_Correctors(cycletime: str, filename: str | None, save: 
             pv_names = get_pv_names(search_pvs(regex, pvs_addr=pvs_addr))
             for i in pv_names:
                 tries = 1
-                while tries < max_tries:
+                while tries <= max_tries:
                     try:
+                        ctxt.get(i)
                         timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp))
                         values.append(str(ctxt.get(i).raw["value"]))
+                        break
                     except Exception as e:
                         print(f"Got {e}. Trying again ({max_tries - tries} left).")
                     finally:
@@ -241,7 +230,7 @@ def get_EPICS_Horizontal_Correctors(cycletime: str, filename: str | None, save: 
     if save: save_to_csv(convert_to_df(final_list), filename)
     return convert_to_df(final_list)
 
-def get_EPICS_Vertical_Correctors(cycletime: str, filename: str | None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
+def get_EPICS_Vertical_Correctors(cycletime: str, filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
     """Function to get live Vertical Corrector data from EPICS. Returns a DataFrame, given the time in cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
     os.environ["EPICS_PVA_NAME_SERVERS"] = live_addr
     ctxt = Context("pva")
@@ -255,10 +244,11 @@ def get_EPICS_Vertical_Correctors(cycletime: str, filename: str | None, save: bo
             pv_names = get_pv_names(search_pvs(regex, pvs_addr=pvs_addr))
             for i in pv_names:
                 tries = 1
-                while tries < max_tries:
+                while tries <= max_tries:
                     try:
                         timestamp = datetime.datetime.fromtimestamp(ctxt.get(i).timestamp).replace(microsecond=0)
                         values.append(str(ctxt.get(i).raw["value"]))
+                        break
                     except Exception as e:
                         print(f"Got {e}. Trying again ({max_tries - tries} left).")
                     finally:
@@ -292,11 +282,12 @@ def get_EPICS_Tune(cycletime: str, filename: str | None = None, save: bool = Fal
             for i in pv_names:
                 tries = 1
             
-                while tries < max_tries:
+                while tries <= max_tries:
                     try:    
                             #timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp))
                             timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp).replace(microsecond=0))
                             values.append(str(ctxt.get(i).raw["value"]))
+                            break
                     except Exception as e:
                         print(f"Got {e}. Trying again ({max_tries - tries} left).")
                     finally:
@@ -341,7 +332,7 @@ def get_EPICS_HD(cycle_time: str, filename: str | None = None, save: bool = Fals
                 
             for i in pv_names:
                 tries = 1
-                while tries < max_tries:
+                while tries <= max_tries:
                     try:
                         #print(ctxt.get(i))
                         timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp).replace(microsecond=0))
@@ -391,12 +382,13 @@ def get_EPICS_VD(cycle_time: str, filename: str | None = None, save: bool = Fals
             pv_names = get_pv_names(search_pvs(regex, pvs_addr=pvs_addr))
             for i in pv_names:
                 tries = 1
-                while tries < max_tries:
+                while tries <= max_tries:
                     try:
                         timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp).replace(microsecond=0))
                         values.append(round_sig(float(ctxt.get(i).raw["value"]), 4))
                         correctors.append(i.split("::")[1].split(":")[0])
                         cycle_times.append(float(i.split(":CURRENT:")[1].replace("MS", "")))
+                        break
                     except Exception as e:
                         print(f"Got {e}. Trying again ({max_tries - tries} left).")
                     finally:
@@ -417,7 +409,7 @@ def get_EPICS_VD(cycle_time: str, filename: str | None = None, save: bool = Fals
     if save: save_to_csv(df, filename)
     return df
 
-def get_EPICS_Q_full_cycle(filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505", live_addr: str = "infra.isis.rl.ac.uk:7075") -> DataFrame: 
+def get_EPICS_Q_full_cycle(filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075") -> DataFrame: 
     """Function to get live Q/Tune data from EPICS. Returns a DataFrame, for the full cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
 
     time_periods = ["0", ".5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "5", "5.5", "6", "7", "8", "10"]
@@ -426,7 +418,7 @@ def get_EPICS_Q_full_cycle(filename: str | None = None, save: bool = False, pvs_
     df_list = []
     
     if filename is None:
-        filename = 'EPICS_Q_FULL_CYCLE_' + str(cycle_time) + '.dat'
+        filename = 'EPICS_Q_FULL_CYCLE_.dat'
     # Iterate through each cycle time and collect the DataFrames
     for cycle_time in time_periods:
         try:
@@ -470,7 +462,7 @@ def get_EPICS_Q_full_cycle(filename: str | None = None, save: bool = False, pvs_
     
     return result_df
 
-def get_EPICS_HD_full_cycle(filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505", live_addr: str = "infra.isis.rl.ac.uk:7075") -> DataFrame: 
+def get_EPICS_HD_full_cycle(filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075") -> DataFrame: 
     """Function to get live Horisontal Dipole data from EPICS. Returns a DataFrame, for the while cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
 
     time_periods = ["0", ".5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5", "5.5", "6", "6.5", "7", "7.5", "8", "8.5", "9", "10"]
@@ -480,11 +472,42 @@ def get_EPICS_HD_full_cycle(filename: str | None = None, save: bool = False, pvs
     
 
     if filename is None:
-        filename = 'EPICS_HD_FULL_CYCLE_' + str(cycle_time) + '.dat'
+        filename = 'EPICS_HD_FULL_CYCLE_.dat'
     # Iterate through each cycle time and collect the DataFrames
     for cycle_time in time_periods:
         try:
             df = get_EPICS_HD(cycle_time, pvs_addr=pvs_addr, live_addr=live_addr) # in MS
+            df_list.append(df)
+            #print(df)
+        except Exception as e:
+            print(f"An error occurred for cycle time {cycle_time}: {e}")
+            continue
+    
+    # Concatenate all DataFrames into a single DataFrame
+    full_cycle_df = pd.concat(df_list, ignore_index=True)
+    
+    
+    # Optionally save the combined DataFrame to a CSV file
+    
+    if save: full_cycle_df.to_csv(filename, index=False)
+    
+    return full_cycle_df
+
+def get_EPICS_VD_full_cycle(filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075") -> DataFrame: 
+    """Function to get live Horisontal Dipole data from EPICS. Returns a DataFrame, for the while cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
+
+    time_periods = ["0", ".5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5", "5.5", "6", "6.5", "7", "7.5", "8", "8.5", "9", "10"]
+    
+    # Initialize an empty list to store the DataFrames
+    df_list = []
+    
+
+    if filename is None:
+        filename = 'EPICS_VD_FULL_CYCLE_.dat'
+    # Iterate through each cycle time and collect the DataFrames
+    for cycle_time in time_periods:
+        try:
+            df = get_EPICS_VD(cycle_time, pvs_addr=pvs_addr, live_addr=live_addr) # in MS
             df_list.append(df)
         except Exception as e:
             print(f"An error occurred for cycle time {cycle_time}: {e}")
@@ -500,7 +523,7 @@ def get_EPICS_HD_full_cycle(filename: str | None = None, save: bool = False, pvs
     
     return full_cycle_df
 
-def get_EPICS_Harmonics(cycletime: int, filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
+def get_EPICS_Harmonics(cycletime: str, filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
     """Function to get live Harmonics data from EPICS. Returns a DataFrame, given the time in cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
 
     os.environ["EPICS_PVA_NAME_SERVERS"] = live_addr
@@ -513,16 +536,20 @@ def get_EPICS_Harmonics(cycletime: int, filename: str | None = None, save: bool 
     values = []
     try:
         if cycletime in time_periods:
-            regex = "DWTRIM::[DF][78](sin|cos):AT_TIME:" + cycletime + "MS"
+            regex = "DWTRIM::*COS:AT_TIME:" + cycletime + "MS"
             pv_names = get_pv_names(search_pvs(regex, pvs_addr=pvs_addr))
+            regex = "DWTRIM::*SIN:AT_TIME:" + cycletime + "MS"
+            for n in get_pv_names(search_pvs(regex, pvs_addr=pvs_addr)): pv_names.append(n)
             for i in pv_names:
+                print(i)
                 tries = 1
             
-                while tries < max_tries:
+                while tries <= max_tries:
                     try:    
                             #timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp))
                             timestamps.append(datetime.datetime.fromtimestamp(ctxt.get(i).timestamp).replace(microsecond=0))
                             values.append(str(ctxt.get(i).raw["value"]))
+                            break
                     except Exception as e:
                         print(f"Got {e}. Trying again ({max_tries - tries} left).")
                     finally:
@@ -536,7 +563,37 @@ def get_EPICS_Harmonics(cycletime: int, filename: str | None = None, save: bool 
     final_list = [pv_names, values, timestamps]
     df = convert_to_df(final_list)
     df = df.transpose()
-    df.columns = ['PV', 'Q_request', 'Last_change']
+    df.columns = ['PV', 'Harmonic', 'Last_change']
     df.reset_index(drop=True, inplace=True)
     if save: save_to_csv(df, filename)
     return df
+
+def get_EPICS_Harmonics_full_cycle(filename: str | None = None, save: bool = False, pvs_addr: str = "http://athena.isis.rl.ac.uk:9505/getPVStatus", live_addr: str = "infra.isis.rl.ac.uk:7075", max_tries: int = 3) -> DataFrame: #in MS
+    """Function to get live Harmonics data from EPICS. Returns a DataFrame, for the while cycle. Will save to filename if save is True. If filename is None, will automatically set the filename.  This function is dependent on p4p, see module description. This function will not work unless p4p imported."""
+
+    time_periods = ["0", ".5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5", "5.5", "6", "6.5", "7", "7.5", "8", "8.5", "9", "10"]
+    
+    # Initialize an empty list to store the DataFrames
+    df_list = []
+    
+
+    if filename is None:
+        filename = 'EPICS_Harmonics_FULL_CYCLE_.dat'
+    # Iterate through each cycle time and collect the DataFrames
+    for cycle_time in time_periods:
+        try:
+            df = get_EPICS_Harmonics(cycle_time, pvs_addr=pvs_addr, live_addr=live_addr) # in MS
+            df_list.append(df)
+        except Exception as e:
+            print(f"An error occurred for cycle time {cycle_time}: {e}")
+            continue
+    
+    # Concatenate all DataFrames into a single DataFrame
+    full_cycle_df = pd.concat(df_list, ignore_index=True)
+    
+    
+    # Optionally save the combined DataFrame to a CSV file
+    
+    if save: full_cycle_df.to_csv(filename, index=False)
+    
+    return full_cycle_df
