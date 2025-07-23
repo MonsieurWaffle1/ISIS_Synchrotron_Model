@@ -198,3 +198,24 @@ class resonance_lines(object):
                         str(abs(resonance[1])).rjust(2), str(res_sum).rjust(4), \
                         ("(non-systematic)", "(systematic)")[res_sum%self.periodicity==0])
                 print(print_string)
+
+
+# dummy values for set tunes
+qx_array = [4.315, 4.270, 4.270, 4.250, 4.235, 4.205, 4.170, 4.190, 4.18, 4.18, 4.18, 4.17, 4.165, 4.165, 4.165, 4.18, 4.18, 4.175]
+qy_array = [3.82, 3.82, 3.81, 3.805, 3.800, 3.825, 3.680, 3.680, 3.69, 3.7, 3.7, 3.695, 3.695, 3.695, 3.692, 3.69, 3.685, 3.665]
+
+# dummy values for time array
+time_array = np.array([-0.1, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0, 8.0, 9.0, 10.0])
+
+# Check that arrays have same length
+assert(len(qx_array) == len(qy_array))
+assert(len(time_array) == len(qy_array))
+assert(len(time_array) == len(qx_array))
+
+# Calculating the currents
+tq_currents_df = tune_di_df(Qh=qx_array, Qv=qy_array, baseQh=4.331, baseQv=3.731, time_array=time_array, z=np.array([-4.73e-3, -5.99E-03, 4.45E-03, 2.40E-03]))
+print(tq_currents_df)
+
+# Finally! Let's get the real tunes
+output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
+print(output_df)
