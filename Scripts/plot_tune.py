@@ -242,10 +242,9 @@ def get_twiss_table(time_point):
     # 2. Set the cycle time = beam energy
     max_E = 800 # 800 MeV
     cycle_time = time_point # 1.5 milliseconds into the 10 ms acceleration cycle of the synchrotron
-
-    twiss_0 = cpymad_madx_twiss(madx, cpymad_logfile, sequence_name)
-
     cpymad_set_isis_cycle_time(madx, max_E, cycle_time)
+    
+    twiss_0 = cpymad_madx_twiss(madx, cpymad_logfile, sequence_name)
 
 
 
