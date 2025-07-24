@@ -14,7 +14,7 @@ from math import log10, floor
 Note: get_EPICS_**** functions are dependent on p4p to access live data, which is dependent on C++ compilers, which are only installed on 2 of the laptops.
 Set the environment variable os.environ["ACCESS_LIVE_DATA"] = 'False' before importing to avoid importing p4p.'''
 
-def get_historical_data(pv_name: str, start_time: datetime, end_time: datetime, archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame:
+def get_historical_data(pv_name: str, start_time: datetime.datetime, end_time: datetime.datetime, archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame:
     """Function to get Program Variables from the archive between given dates."""
     #Convert DataTime object to 
     start_time = start_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -123,7 +123,7 @@ def date_to_unix(date: datetime.datetime | str) -> float:
         date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
     return date.timestamp()
 
-def get_archive_correctors(cycleTime: int, axis: str, timeStart: datetime.datetime, timeEnd: datetime.datetime, archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame: # returns a pandas datatype with headers timestamp, val for current, magnet name and cycle time
+def get_archive_correctors(cycleTime: str, axis: str, timeStart: datetime.datetime, timeEnd: datetime.datetime, archiver_addr: str = "http://athena.isis.rl.ac.uk:9505") -> DataFrame: # returns a pandas datatype with headers timestamp, val for current, magnet name and cycle time
     """Function to get corrector values from the archive, given time in cycle, and date. Calls get_historical_data()."""
     returnData = pd.DataFrame()
     for i in range(0,10):
