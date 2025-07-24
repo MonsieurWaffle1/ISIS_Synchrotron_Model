@@ -2,3 +2,7 @@
 *.log
 /venv
 /__pycache__
+Scripts/__pycache__/cpymad_closed_orbit_matching_functions.cpython-313.pyc
+*.pyc
+*.pyc
+cpymad_logfile.txt
