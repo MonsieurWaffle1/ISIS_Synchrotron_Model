@@ -23,7 +23,7 @@ st.markdown(
 #  DataFrame
 df = getValues()
 
-print(df)
+# print(df)
 
 set_df = df[df['type'] == 'set']
 
@@ -55,22 +55,30 @@ edited_df = st.data_editor(
     num_rows="dynamic"
 )
 
-################################### REPLACE CODE UNDER WITH TABLE
-fig = px.scatter(df, 
-                    x="x", 
-                    y="y",
-                    color="type",
-                    labels={
-                    "x":"Qx", 
-                    "y":"Qy",
-                    "type":"Type of tune", 
-                    })
+################################### tune table
+
+
+# plotting set & actual tunes
+fig = px.scatter(df,
+    x="x", 
+    y="y", 
+    color="time", 
+    symbol="type",
+)
+
+fig.update_layout(
+    title="Set & Actual Tunes",
+    xaxis_title='Qh',
+    yaxis_title='Qv',
+    legend=dict(x=0, y=1, traceorder='normal', orientation='h')
+)
+
 st.plotly_chart(fig)
 
 ###################################### beta table
 st.title("Beta values table")
 
-twiss_table = get_twiss_table()
+twiss_table = get_twiss_table(1.5)
 
 fig = px.line(twiss_table, 
             x="s", 

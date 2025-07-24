@@ -3,7 +3,7 @@
   +     MAD-X 5.09.03  (64 bit, Windows)     +
   + Support: mad@cern.ch, http://cern.ch/mad +
   + Release   date: 2024.04.25               +
-  + Execution date: 2025.07.23 14:26:36      +
+  + Execution date: 2025.07.24 09:04:47      +
   ++++++++++++++++++++++++++++++++++++++++++++
 
 ++++++ warning: cannot open input file: ..\Lattice_Files\04_New_Harmonics\ISIS.injected_beam
