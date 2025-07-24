@@ -11,12 +11,6 @@ import numpy as np
 #### Importing data
 from get_tune_values import *
 
-harmonic_data = pd.read_csv("Collected_EPICS_data/get_EPICS_Harmonics_full_cycle.dat")
-def getValues(cycle):
-    """    Function to get the value of a specific cycle and time from the harmonic data.
-    """
-    values = harmonic_data[(harmonic_data['cycle'] == cycle)]
-    return values
 
 st.title("Tune GUI")
 
@@ -61,8 +55,6 @@ edited_df = st.data_editor(
 
 ################################### REPLACE CODE UNDER WITH TABLE
 
-df = getValues()
-
 # plotting set & actual tunes
 fig = px.scatter(df,
     x="x", 
@@ -85,8 +77,10 @@ st.title("Enter time points")
 with st.form(key="form"):
     time_point = st.slider("Enter a time point: ", -0.5, 0.5, 10)
     submit_button=st.form_submit_button(label="submit")
+    harmonic = st.checkbox("Apply harmonic effect")
+
     if submit_button:
-        twiss_table = get_twiss_table(time_point)
+        twiss_table = get_twiss_table(time_point, harmonic)
 
         fig = px.line(twiss_table, 
                      x ="s",
