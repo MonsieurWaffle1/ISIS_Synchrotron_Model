@@ -2,7 +2,8 @@ from helper_functions import *
 from cpymad_helpers import *
 from cpymad_closed_orbit_matching_functions import *
 from ISIS_tune_control_functions import *
-
+import os
+import pandas as pd
 
 
 
@@ -217,12 +218,16 @@ def get_harmonic(pv_name: str, cycletime: str | float) -> float:
 
     harmonic_data = pd.read_csv(csv_path)
 
-    harmonic_index = harmonic_data["PV"].str.contains(f"DWTRIM::{pv_name}:AT_TIME:{cycletime}MS")
+    harmonic_index = harmonic_data["PV"].str.contains(f"DWTRIM::{pv_name}:AT_TIME:{str(cycletime)}MS")
     return harmonic_data[harmonic_index]["Harmonic"].to_list()[0]
 
 
-
 def get_twiss_table(time_point, has_harmonic):
+    if time_point % 1 == 0:
+        time_point = round(time_point)
+    else:
+        time_point = round(time_point, 1)
+
     # 1. Instantiate a MAD-X object
     cpymad_logfile = 'cpymad_logfile.txt'
     sequence_name = 'synchrotron'
