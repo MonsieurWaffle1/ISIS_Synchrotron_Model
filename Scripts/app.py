@@ -9,7 +9,8 @@ import seaborn as sns
 import numpy as np
 
 #### Importing data
-from get_values import *
+from get_tune_values import *
+from plot_tune import *
 
 st.title("Tune GUI")
 
