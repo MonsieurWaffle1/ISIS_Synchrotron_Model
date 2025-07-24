@@ -75,7 +75,12 @@ st.title("Beta values table")
 
 st.title("Enter time points")
 with st.form(key="form"):
-    time_point = st.slider("Enter a time point: ", -0.5, 0.5, 10)
+    time_point = st.slider("Enter a time point: ",
+                           min_value=-0.5,
+                           max_value=10.0,
+                           value = 1.0,
+                           step=0.5)
+    
     submit_button=st.form_submit_button(label="submit")
     harmonic = st.checkbox("Apply harmonic effect")
 
