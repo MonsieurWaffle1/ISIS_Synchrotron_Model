@@ -88,6 +88,13 @@ with st.form(key="form"):
                      labels={
                     "betx":"Beta X"
                      })
+
+        fig = px.line(twiss_table, 
+                     x ="s",
+                     y = "bety",
+                     labels={
+                    "bety":"Beta Y"
+                     })
         st.plotly_chart(fig)
                     
  
