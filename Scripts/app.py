@@ -78,7 +78,7 @@ st.plotly_chart(fig)
 ###################################### beta table
 st.title("Beta values table")
 
-twiss_table = get_twiss_table()
+twiss_table = get_twiss_table(1.5)
 
 fig = px.line(twiss_table, 
             x="s", 
