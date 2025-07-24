@@ -23,6 +23,8 @@ st.markdown(
 #  DataFrame
 df = getValues()
 
+# print(df)
+
 set_df = df[df['type'] == 'set']
 
 edited_df = st.data_editor(
@@ -53,9 +55,8 @@ edited_df = st.data_editor(
     num_rows="dynamic"
 )
 
-################################### REPLACE CODE UNDER WITH TABLE
+################################### tune table
 
-df = getValues()
 
 # plotting set & actual tunes
 fig = px.scatter(df,
@@ -64,6 +65,7 @@ fig = px.scatter(df,
     color="time", 
     symbol="type",
 )
+
 fig.update_layout(
     title="Set & Actual Tunes",
     xaxis_title='Qh',
@@ -73,17 +75,22 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-fig = px.line(twiss_table, 
-            x="s", 
-            y="betx",
-            labels={
-            "betx":"Beta X"
-            }
-            )
-st.plotly_chart(fig)
+###################################### beta table
+st.title("Beta values table")
+
 
 st.title("Enter time points")
 with st.form(key="form"):
     time_point = st.number_input("Enter time point from -0.6 to 10 in increments of 0.5: ")
     submit_button=st.form_submit_button(label="submit")
-get_twiss_table(time_point)
+    if submit_button:
+        twiss_table = get_twiss_table(time_point)
+
+        fig = px.line(twiss_table, 
+                    x="s", 
+                    y="betx",
+                    labels={
+                    "betx":"Beta X"
+                    }
+                    )
+        st.plotly_chart(fig)
