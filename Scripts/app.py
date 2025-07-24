@@ -10,7 +10,6 @@ import numpy as np
 
 #### Importing data
 from get_tune_values import *
-from plot_tune import *
 
 harmonic_data = pd.read_csv("Collected_EPICS_data/get_EPICS_Harmonics_full_cycle.dat")
 def getHarmonics(cycle):
@@ -29,8 +28,6 @@ st.markdown(
 )
 #  DataFrame
 df = getValues()
-
-# print(df)
 
 set_df = df[df['type'] == 'set']
 
@@ -62,8 +59,9 @@ edited_df = st.data_editor(
     num_rows="dynamic"
 )
 
-################################### tune table
+################################### REPLACE CODE UNDER WITH TABLE
 
+df = getValues()
 
 # plotting set & actual tunes
 fig = px.scatter(df,
@@ -72,7 +70,6 @@ fig = px.scatter(df,
     color="time", 
     symbol="type",
 )
-
 fig.update_layout(
     title="Set & Actual Tunes",
     xaxis_title='Qh',
@@ -82,22 +79,23 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-###################################### beta table
 st.title("Beta values table")
-
 
 st.title("Enter time points")
 with st.form(key="form"):
     time_point = st.number_input("Enter time point from -0.6 to 10 in increments of 0.5: ")
     submit_button=st.form_submit_button(label="submit")
+    harmonic = st.checkbox("Apply harmonic effect")
+
     if submit_button:
-        twiss_table = get_twiss_table(time_point)
+        twiss_table = get_twiss_table(time_point, harmonic)
 
         fig = px.line(twiss_table, 
-                    x="s", 
-                    y="betx",
-                    labels={
+                     x ="s",
+                     y = "betx",
+                     labels={
                     "betx":"Beta X"
-                    }
-                    )
+                     })
         st.plotly_chart(fig)
+                    
+ 
