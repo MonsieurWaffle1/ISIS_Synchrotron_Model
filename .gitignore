@@ -2,3 +2,4 @@
 *.pyc
 cpymad_logfile.txt
 synchrotron_madx_twiss.tfs
+*.dat
