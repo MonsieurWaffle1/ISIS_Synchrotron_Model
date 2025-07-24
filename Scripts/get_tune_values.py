@@ -15,7 +15,7 @@ def getValues() -> pd.DataFrame:
     madx = cpymad_start(cpymad_logfile)
 
     # lattice_folder = '..\\Lattice_Files\\04_New_Harmonics\\'
-    lattice_folder = '../Lattice_Files/04_New_Harmonics/'
+    lattice_folder = 'Lattice_Files/04_New_Harmonics/'
 
     madx.call(file=lattice_folder+'ISIS.injected_beam')
     madx.call(file=lattice_folder+'ISIS.strength')
@@ -54,6 +54,7 @@ def getValues() -> pd.DataFrame:
     output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
     #print(output_df)
     print('Actual values found')
+    print(output_df)
 
     output = {
         "x":[],
@@ -85,5 +86,3 @@ def getValues() -> pd.DataFrame:
 
 print(getValues())
 # output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
-
-
