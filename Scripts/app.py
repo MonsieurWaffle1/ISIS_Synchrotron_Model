@@ -88,3 +88,9 @@ fig = px.line(twiss_table,
             }
             )
 st.plotly_chart(fig)
+
+st.title("Enter time points")
+with st.form(key="form"):
+    time_point = st.number_input("Enter time point from -0.6 to 10 in increments of 0.5: ")
+    submit_button=st.form_submit_button(label="submit")
+get_twiss_table(time_point)
