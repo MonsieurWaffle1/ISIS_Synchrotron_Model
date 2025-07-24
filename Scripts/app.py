@@ -11,16 +11,6 @@ import numpy as np
 #### Importing data
 from get_tune_values import *
 
-def get_harmonic(pv_name: str, cycletime: str | float) -> float:
-    """Return rows matching a specific CycleTime and PV value."""
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(script_dir, "..", "Collected_EPICS_data", "get_EPICS_Harmonics_full_cycle.dat")
-
-    harmonic_data = pd.read_csv(csv_path)
-
-    harmonic_index = harmonic_data["PV"].str.contains(f"DWTRIM::{pv_name}:AT_TIME:{cycletime}MS")
-    return harmonic_data[harmonic_index]["Harmonic"].to_list()[0]
 
 st.title("Tune GUI")
 
@@ -65,8 +55,6 @@ edited_df = st.data_editor(
 
 ################################### REPLACE CODE UNDER WITH TABLE
 
-df = getValues()
-
 # plotting set & actual tunes
 fig = px.scatter(df,
     x="x", 
@@ -87,7 +75,7 @@ st.title("Beta values table")
 
 st.title("Enter time points")
 with st.form(key="form"):
-    time_point = st.number_input("Enter time point from -0.6 to 10 in increments of 0.5: ")
+    time_point = st.number_input("Enter time point from 0 to 10 in increments of 0.5: ")
     submit_button=st.form_submit_button(label="submit")
     harmonic = st.checkbox("Apply harmonic effect")
 
