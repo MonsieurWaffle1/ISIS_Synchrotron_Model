@@ -9,8 +9,7 @@ import seaborn as sns
 import numpy as np
 
 #### Importing data
-from get_tune_values import *
-from plot_tune import *
+from get_values import *
 
 st.title("Tune GUI")
 
@@ -22,8 +21,6 @@ st.markdown(
 )
 #  DataFrame
 df = getValues()
-
-# print(df)
 
 set_df = df[df['type'] == 'set']
 
@@ -55,8 +52,9 @@ edited_df = st.data_editor(
     num_rows="dynamic"
 )
 
-################################### tune table
+################################### REPLACE CODE UNDER WITH TABLE
 
+df = getValues()
 
 # plotting set & actual tunes
 fig = px.scatter(df,
@@ -65,7 +63,6 @@ fig = px.scatter(df,
     color="time", 
     symbol="type",
 )
-
 fig.update_layout(
     title="Set & Actual Tunes",
     xaxis_title='Qh',
@@ -75,16 +72,9 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-###################################### beta table
-st.title("Beta values table")
+st.title("Enter time points")
+with st.form(key ='form'):
+    time_point = st.number_input("Input selected timepoints")
+    submit_button = st.form_submit_button(label='submit')
 
-twiss_table = get_twiss_table(1.5)
-
-fig = px.line(twiss_table, 
-            x="s", 
-            y="betx",
-            labels={
-            "betx":"Beta X"
-            }
-            )
-st.plotly_chart(fig)
+get_twiss_table(time_point)
