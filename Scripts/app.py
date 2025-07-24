@@ -9,7 +9,7 @@ import seaborn as sns
 import numpy as np
 
 #### Importing data
-from get_values import *
+from get_tune_values import *
 
 st.title("Tune GUI")
 
@@ -71,11 +71,6 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
-
-st.title("Enter time points")
-with st.form(key ='form'):
-    time_point = st.number_input("Input selected timepoints")
-    submit_button = st.form_submit_button(label='submit')
 
 fig = px.line(twiss_table, 
             x="s", 
