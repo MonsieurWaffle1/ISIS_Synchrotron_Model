@@ -1,1 +1,5 @@
-.venv
+*.venv
+*.txt
+*.log
+/venv
+/__pycache__
