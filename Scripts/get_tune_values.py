@@ -86,5 +86,3 @@ def getValues() -> pd.DataFrame:
 
 print(getValues())
 # output_df = tune_calculation_iterator(madx, tq_currents_df, cpymad_logfile)
-
-
