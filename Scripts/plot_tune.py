@@ -211,51 +211,48 @@ class resonance_lines(object):
 
 
 
-####################################
-def get_twiss_table():
+
+
+def get_twiss_table(time_point):
+    # 1. Instantiate a MAD-X object
+    cpymad_logfile = 'cpymad_logfile.txt'
+    sequence_name = 'synchrotron'
+
+    madx = cpymad_start(cpymad_logfile)
+
+    #`madx` is the simulation object, next we have to give it the description of the synchrotron, also called the **lattice**
+    #We have a number of lattices to choose from
+
+    # lattice_folder = '../Lattice_Files/00_Simplified_Lattice/'
+    # lattice_folder = '../Lattice_Files/01_Original_Lattice/'
+    # lattice_folder = '../Lattice_Files/02_Aperture_Lattice/'
+    # lattice_folder = '../Lattice_Files/03_CO_Kick_Lattice/'
+    lattice_folder = '../Lattice_Files/04_New_Harmonics/'
+
+    madx.call(file=lattice_folder+'ISIS.injected_beam')
+    madx.call(file=lattice_folder+'ISIS.strength')
+    madx.call(file=lattice_folder+'2023.strength')
+    madx.call(file=lattice_folder+'ISIS.elements')
+    madx.call(file=lattice_folder+'ISIS.sequence')
+
+    cpymad_check_and_use_sequence(madx, cpymad_logfile, sequence_name)
+
+
+
+    # 2. Set the cycle time = beam energy
+    max_E = 800 # 800 MeV
+    cycle_time = time_point # 1.5 milliseconds into the 10 ms acceleration cycle of the synchrotron
+
+    twiss_0 = cpymad_madx_twiss(madx, cpymad_logfile, sequence_name)
+
+    cpymad_set_isis_cycle_time(madx, max_E, cycle_time)
+
+
+
+    # 3. Calculate lattice parameters using **TWISS** command
+
+
+
+    cpymad_plot_madx_twiss_quads(madx, twiss_0, title='Initial lattice tune')
     return twiss_0
-####################################
-
-
-
-# 1. Instantiate a MAD-X object
-cpymad_logfile = 'cpymad_logfile.txt'
-sequence_name = 'synchrotron'
-
-madx = cpymad_start(cpymad_logfile)
-
-#`madx` is the simulation object, next we have to give it the description of the synchrotron, also called the **lattice**
-#We have a number of lattices to choose from
-
-# lattice_folder = '../Lattice_Files/00_Simplified_Lattice/'
-# lattice_folder = '../Lattice_Files/01_Original_Lattice/'
-# lattice_folder = '../Lattice_Files/02_Aperture_Lattice/'
-# lattice_folder = '../Lattice_Files/03_CO_Kick_Lattice/'
-lattice_folder = '../Lattice_Files/04_New_Harmonics/'
-
-madx.call(file=lattice_folder+'ISIS.injected_beam')
-madx.call(file=lattice_folder+'ISIS.strength')
-madx.call(file=lattice_folder+'2023.strength')
-madx.call(file=lattice_folder+'ISIS.elements')
-madx.call(file=lattice_folder+'ISIS.sequence')
-
-cpymad_check_and_use_sequence(madx, cpymad_logfile, sequence_name)
-
-
-
-# 2. Set the cycle time = beam energy
-max_E = 800 # 800 MeV
-cycle_time = 1.5 # 1.5 milliseconds into the 10 ms acceleration cycle of the synchrotron
-
-twiss_0 = cpymad_madx_twiss(madx, cpymad_logfile, sequence_name)
-
-cpymad_set_isis_cycle_time(madx, max_E, cycle_time)
-
-
-
-# 3. Calculate lattice parameters using **TWISS** command
-
-
-
-cpymad_plot_madx_twiss_quads(madx, twiss_0, title='Initial lattice tune') 
 
