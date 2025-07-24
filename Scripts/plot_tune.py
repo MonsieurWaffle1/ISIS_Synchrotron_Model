@@ -213,7 +213,7 @@ class resonance_lines(object):
 
 
 
-def get_twiss_table(time_point):
+def get_twiss_table(time_point, has_harmonic):
     # 1. Instantiate a MAD-X object
     cpymad_logfile = 'cpymad_logfile.txt'
     sequence_name = 'synchrotron'
@@ -237,14 +237,25 @@ def get_twiss_table(time_point):
 
     cpymad_check_and_use_sequence(madx, cpymad_logfile, sequence_name)
 
+    ## Set harmonics
+    """
+    if has_harmonic:
+        madx.globals['D7COS'] = get_harmonic("D7COS", time_point)
+        madx.globals['D8COS'] = get_harmonic("D8COS", time_point)
+        madx.globals['F8COS'] = get_harmonic("F8COS", time_point)
+        madx.globals['D7SIN'] = get_harmonic("D7SIN", time_point)
+        madx.globals['D8SIN'] = get_harmonic("D8SIN", time_point)
+        madx.globals['F8SIN'] = get_harmonic("F8SIN", time_point)
+    """
 
 
     # 2. Set the cycle time = beam energy
     max_E = 800 # 800 MeV
     cycle_time = time_point # 1.5 milliseconds into the 10 ms acceleration cycle of the synchrotron
     cpymad_set_isis_cycle_time(madx, max_E, cycle_time)
-    
+
     twiss_0 = cpymad_madx_twiss(madx, cpymad_logfile, sequence_name)
+
 
 
 
@@ -254,4 +265,5 @@ def get_twiss_table(time_point):
 
     cpymad_plot_madx_twiss_quads(madx, twiss_0, title='Initial lattice tune')
     return twiss_0
+
 
