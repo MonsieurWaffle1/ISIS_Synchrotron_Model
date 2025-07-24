@@ -55,8 +55,6 @@ edited_df = st.data_editor(
 
 ################################### REPLACE CODE UNDER WITH TABLE
 
-df = getValues()
-
 # plotting set & actual tunes
 fig = px.scatter(df,
     x="x", 
@@ -77,7 +75,7 @@ st.title("Beta values table")
 
 st.title("Enter time points")
 with st.form(key="form"):
-    time_point = st.number_input("Enter time point from -0.6 to 10 in increments of 0.5: ")
+    time_point = st.number_input("Enter time point from 0 to 10 in increments of 0.5: ")
     submit_button=st.form_submit_button(label="submit")
     harmonic = st.checkbox("Apply harmonic effect")
 
