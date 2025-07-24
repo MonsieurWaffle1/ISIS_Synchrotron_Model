@@ -83,7 +83,7 @@ st.title("Beta values table")
 
 st.title("Enter time points")
 with st.form(key="form"):
-    time_point = st.number_input("Enter time point from -0.6 to 10 in increments of 0.5: ")
+    time_point = st.slider("Enter a time point: ", -0.5, 0.5, 10)
     submit_button=st.form_submit_button(label="submit")
     if submit_button:
         twiss_table = get_twiss_table(time_point)
