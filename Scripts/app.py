@@ -13,7 +13,7 @@ from get_tune_values import *
 from plot_tune import *
 
 harmonic_data = pd.read_csv("Collected_EPICS_data/get_EPICS_Harmonics_full_cycle.dat")
-def getValues(cycle):
+def getHarmonics(cycle):
     """    Function to get the value of a specific cycle and time from the harmonic data.
     """
     values = harmonic_data[(harmonic_data['cycle'] == cycle)]
