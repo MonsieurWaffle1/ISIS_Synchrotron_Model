@@ -73,11 +73,6 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-st.title("Enter time points")
-with st.form(key ='form'):
-    time_point = st.number_input("Input selected timepoints")
-    submit_button = st.form_submit_button(label='submit')
-
 fig = px.line(twiss_table, 
             x="s", 
             y="betx",
