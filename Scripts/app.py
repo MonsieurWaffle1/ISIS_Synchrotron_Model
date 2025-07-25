@@ -76,7 +76,7 @@ st.title("Beta values table")
 st.title("Enter time points")
 with st.form(key="form"):
     time_point = st.slider("Enter a time point: ",
-                           min_value=-0.5,
+                           min_value=0.0,
                            max_value=10.0,
                            value = 1.0,
                            step=0.5)
@@ -86,20 +86,20 @@ with st.form(key="form"):
 
     if submit_button:
         twiss_table = get_twiss_table(time_point, harmonic)
-
-        fig = px.line(twiss_table, 
-                     x ="s",
-                     y = "betx",
-                     labels={
-                    "betx":"Beta X"
-                     })
-
-        fig = px.line(twiss_table, 
-                     x ="s",
-                     y = "bety",
-                     labels={
-                    "bety":"Beta Y"
-                     })
+        twiss_long = twiss_table.melt(id_vars='s', value_vars=['betx', 'bety'],
+                               var_name='beta_type', value_name='beta_value')
+        
+        fig = px.line(
+            twiss_long,
+            x='s',
+            y='beta_value',
+            color='beta_type',
+            title="Beta graph (betx in red, bety in blue)",
+            color_discrete_map={
+                'betx': 'red',
+                'bety': 'blue'
+            }
+        )
         st.plotly_chart(fig)
                     
  
