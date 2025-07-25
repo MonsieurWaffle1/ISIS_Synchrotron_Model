@@ -4,7 +4,8 @@ from cpymad_closed_orbit_matching_functions import *
 from ISIS_tune_control_functions import *
 import os
 import pandas as pd
-
+import plotly.graph_objects as go
+import plotly.express as px
 
 
 ######################################################### 
@@ -205,6 +206,76 @@ class resonance_lines(object):
                         str(abs(resonance[1])).rjust(2), str(res_sum).rjust(4), \
                         ("(non-systematic)", "(systematic)")[res_sum%self.periodicity==0])
                 print(print_string)
+
+
+class ResonanceLinesPlotly:
+    def __init__(self, Qx_range, Qy_range, orders, periodicity):
+        if np.std(Qx_range):
+            self.Qx_min = np.min(Qx_range)
+            self.Qx_max = np.max(Qx_range)
+        else:
+            self.Qx_min = np.floor(Qx_range) - 0.05
+            self.Qx_max = np.floor(Qx_range) + 1.05
+
+        if np.std(Qy_range):
+            self.Qy_min = np.min(Qy_range)
+            self.Qy_max = np.max(Qy_range)
+        else:
+            self.Qy_min = np.floor(Qy_range) - 0.05
+            self.Qy_max = np.floor(Qy_range) + 1.05
+
+        self.periodicity = periodicity
+        self.resonance_lines = []
+        nx, ny = [], []
+
+        for order in np.nditer(np.array(orders)):
+            t = np.array(range(-order, order + 1))
+            nx.extend(order - np.abs(t))
+            ny.extend(t)
+
+        nx = np.array(nx)
+        ny = np.array(ny)
+
+        cextr = np.array([
+            nx * np.floor(self.Qx_min) + ny * np.floor(self.Qy_min),
+            nx * np.ceil(self.Qx_max) + ny * np.floor(self.Qy_min),
+            nx * np.floor(self.Qx_min) + ny * np.ceil(self.Qy_max),
+            nx * np.ceil(self.Qx_max) + ny * np.ceil(self.Qy_max)
+        ], dtype='int')
+
+        cmin = np.min(cextr, axis=0)
+        cmax = np.max(cextr, axis=0)
+        res_sum = [range(cmin[i], cmax[i] + 1) for i in range(cextr.shape[1])]
+        self.resonance_list = zip(nx, ny, res_sum)
+
+    def get_resonance_lines(self):
+        lines = []
+        for nx, ny, res_range in self.resonance_list:
+            for res_sum in res_range:
+                if ny != 0:
+                    x_vals = [self.Qx_min, self.Qx_max]
+                    y_vals = [(res_sum - nx * x) / ny for x in x_vals]
+                else:
+                    x_vals = [res_sum / nx] * 2
+                    y_vals = [self.Qy_min, self.Qy_max]
+
+                # Determine style
+                is_skew = ny % 2 != 0
+                is_systematic = res_sum % self.periodicity == 0
+                color = 'red' if is_systematic else 'blue'
+                dash = 'dash' if is_skew else 'solid'
+                width = 1.5 if is_systematic else 0.8
+
+                lines.append({
+                    'x': x_vals,
+                    'y': y_vals,
+                    'color': color,
+                    'dash': dash,
+                    'width': width
+                })
+        return lines
+
+
 
 ######################################################### 
 #******************* END OF FUNCTIONS AND CLASSES FROM NOTEBOOK ***********************
